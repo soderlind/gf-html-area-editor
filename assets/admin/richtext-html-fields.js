@@ -73,58 +73,53 @@
       return;
     }
 
-    // GF 2.5+ HTML field structure: the content preview is typically in .gfield_html or .gfield_html_formatted
-    // or within a nested structure. We need to find the element that displays the placeholder text.
-    let previewContainer = null;
-    
-    // Try the standard GF selectors first.
-    previewContainer = fieldContainer.querySelector('.gfield_html_formatted');
+    // Check if we already have our preview container.
+    let previewContainer = fieldContainer.querySelector('.gfte-html-preview');
     
     if (!previewContainer) {
-      previewContainer = fieldContainer.querySelector('.gfield_html');
-    }
-
-    if (!previewContainer) {
-      // GF 2.6+ may use gform-field-label structure with preview after it.
-      const label = fieldContainer.querySelector('.gform-field-label');
-      if (label && label.nextElementSibling) {
-        previewContainer = label.nextElementSibling;
-      }
-    }
-
-    if (!previewContainer) {
-      // Look for the element containing the GF placeholder text.
-      const walker = document.createTreeWalker(
-        fieldContainer,
-        NodeFilter.SHOW_TEXT,
-        null,
-        false
-      );
+      // GF 2.5+ HTML field structure: find the element that displays the placeholder text.
+      // Try the standard GF selectors first.
+      let gfPreview = fieldContainer.querySelector('.gfield_html_formatted');
       
-      let node;
-      while ((node = walker.nextNode())) {
-        if (node.textContent && node.textContent.includes('HTML content is not displayed')) {
-          previewContainer = node.parentElement;
-          break;
+      if (!gfPreview) {
+        gfPreview = fieldContainer.querySelector('.gfield_html');
+      }
+
+      if (!gfPreview) {
+        // Look for the element containing the GF placeholder text.
+        const walker = document.createTreeWalker(
+          fieldContainer,
+          NodeFilter.SHOW_TEXT,
+          null,
+          false
+        );
+        
+        let node;
+        while ((node = walker.nextNode())) {
+          if (node.textContent && node.textContent.includes('HTML content is not displayed')) {
+            gfPreview = node.parentElement;
+            break;
+          }
         }
       }
-    }
 
-    if (!previewContainer) {
-      // Create our own preview container inside the field.
-      let existingPreview = fieldContainer.querySelector('.gfte-html-preview');
-      if (!existingPreview) {
-        existingPreview = document.createElement('div');
-        existingPreview.className = 'gfte-html-preview';
+      if (gfPreview) {
+        // Replace GF's preview with our container.
+        previewContainer = document.createElement('div');
+        previewContainer.className = 'gfte-html-preview';
+        gfPreview.parentNode.replaceChild(previewContainer, gfPreview);
+      } else {
+        // Create our own preview container inside the field.
+        previewContainer = document.createElement('div');
+        previewContainer.className = 'gfte-html-preview';
         // Insert after the admin icons/toolbar.
         const adminIcons = fieldContainer.querySelector('.gfield_admin_icons');
         if (adminIcons) {
-          adminIcons.parentNode.insertBefore(existingPreview, adminIcons.nextSibling);
+          adminIcons.parentNode.insertBefore(previewContainer, adminIcons.nextSibling);
         } else {
-          fieldContainer.appendChild(existingPreview);
+          fieldContainer.appendChild(previewContainer);
         }
       }
-      previewContainer = existingPreview;
     }
 
     if (!previewContainer) {
@@ -135,7 +130,7 @@
 
     // Render the HTML content in the preview.
     if (content) {
-      previewContainer.innerHTML = '<div class="gfte-html-preview">' + content + '</div>';
+      previewContainer.innerHTML = content;
     } else {
       previewContainer.innerHTML = '<em class="gfte-empty-preview">' + (window.gf_vars && window.gf_vars.noContent || 'No content') + '</em>';
     }
@@ -509,8 +504,13 @@
       const originalGetFieldContent = window.GetFieldContent;
 
       window.GetFieldContent = function (field) {
-        if (field && field.type === 'html' && field.content) {
-          return '<div class="gfte-html-preview">' + field.content + '</div>';
+        if (field && field.type === 'html') {
+          // Return the content directly - our updateFieldPreview will handle formatting.
+          const content = field.content || '';
+          if (content) {
+            return '<div class="gfte-html-preview">' + content + '</div>';
+          }
+          return '<div class="gfte-html-preview"><em class="gfte-empty-preview">' + (window.gf_vars && window.gf_vars.noContent || 'No content') + '</em></div>';
         }
         return originalGetFieldContent.apply(this, arguments);
       };
