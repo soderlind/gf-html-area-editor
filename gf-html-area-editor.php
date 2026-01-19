@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
  */
 
 final class GFTE_Plugin {
-	private const VERSION = '0.2.0';
+	private const VERSION             = '0.2.0';
 	private const SCRIPT_HANDLE_ADMIN = 'gfte-richtext-html-fields';
 	private const STYLE_HANDLE_ADMIN  = 'gfte-richtext-html-fields';
 
@@ -34,7 +34,7 @@ final class GFTE_Plugin {
 		}
 
 		// Gravity Forms form editor screen.
-		$page = isset( $_GET['page'] ) ? sanitize_key( (string) wp_unslash( $_GET['page'] ) ) : '';
+		$page = isset( $_GET[ 'page' ] ) ? sanitize_key( (string) wp_unslash( $_GET[ 'page' ] ) ) : '';
 		if ( 'gf_edit_forms' !== $page ) {
 			return;
 		}
@@ -52,7 +52,7 @@ final class GFTE_Plugin {
 			return;
 		}
 
-		$page = isset( $_GET['page'] ) ? sanitize_key( (string) wp_unslash( $_GET['page'] ) ) : '';
+		$page = isset( $_GET[ 'page' ] ) ? sanitize_key( (string) wp_unslash( $_GET[ 'page' ] ) ) : '';
 		if ( 'gf_edit_forms' !== $page ) {
 			return;
 		}

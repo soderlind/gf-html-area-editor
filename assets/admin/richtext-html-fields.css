@@ -1,12 +1,12 @@
 .gfte-rich-content-setting label {
-  display: inline-block !important;
-  position: relative;
-  z-index: 2;
+	display: inline-block !important;
+	position: relative;
+	z-index: 2;
 }
 
 /* Keep the label from overlapping the Visual/Text tabs. */
 #wp-gfte_field_rich_content-wrap {
-  margin-top: -2.7rem;
+	margin-top: -2.7rem;
 }
 
 /* Hide the default content setting textarea row. */
@@ -15,34 +15,34 @@
 .gform-field-settings .content_setting:not(.gfte-rich-content-setting),
 .widget-content .content_setting:not(.gfte-rich-content-setting),
 .gfte-hidden-original-content-setting {
-  display: none !important;
+	display: none !important;
 }
 
 /* HTML field preview styles */
 .gfte-html-preview {
-  padding: 10px;
-  min-height: 20px;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  margin-top: 10px;
+	padding: 10px;
+	min-height: 20px;
+	background: #fff;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	margin-top: 10px;
 }
 
 .gfte-html-preview p:first-child {
-  margin-top: 0;
+	margin-top: 0;
 }
 
 .gfte-html-preview p:last-child {
-  margin-bottom: 0;
+	margin-bottom: 0;
 }
 
 .gfte-empty-preview {
-  color: #999;
-  font-style: italic;
+	color: #999;
+	font-style: italic;
 }
 
 /* Ensure the HTML field preview content is visible in the form editor */
 #gform_fields .gfield--type-html .gfte-html-preview,
 .gform_fields .gfield--type-html .gfte-html-preview {
-  display: block !important;
+	display: block !important;
 }
