@@ -4,7 +4,7 @@ Tags: gravity forms, html field, rich text editor, wysiwyg, tinymce
 Requires at least: 5.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 0.1.0
+Stable tag: 0.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,6 +62,14 @@ Yes, all existing Gravity Forms functionality including conditional logic contin
 
 == Changelog ==
 
+= 0.2.0 =
+* Live preview of HTML content in form editor
+* Preview updates in real-time as you type
+* All HTML fields show rendered content on form load
+* Fixed event race conditions and duplicate bindings
+* Improved debouncing for preview updates
+* Added namespaced jQuery events to prevent conflicts
+
 = 0.1.0 =
 * Initial release
 * Rich text editor for HTML field content
@@ -70,6 +78,9 @@ Yes, all existing Gravity Forms functionality including conditional logic contin
 * Content sanitization on frontend output
 
 == Upgrade Notice ==
+
+= 0.2.0 =
+Adds live preview of HTML field content in the form editor.
 
 = 0.1.0 =
 Initial release.

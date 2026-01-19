@@ -56,14 +56,10 @@ npm install
 npm test
 ```
 
-## Changelog
+## Credits
 
-### 0.1.0
-- Initial release
-- Rich text editor for HTML field content
-- Visual and Text mode switching
-- Media Library integration
-- Content sanitization on frontend output
+Inspiered by the work of [Gravity Wiz- Rich Text HTML Fields](https://gravitywiz.com/snippet-library/gw-rich-text-html-fields/).
+
 
 ## License
 

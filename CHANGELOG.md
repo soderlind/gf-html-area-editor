@@ -5,7 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+
+## [0.2.0] - 2026-01-20
+
+### Added
+- Live preview of HTML content in form editor field boxes
+- Real-time preview updates as you edit content
+- All HTML fields show rendered content when form editor loads
+
+### Fixed
+- Event race conditions with duplicate jQuery event bindings
+- Editor double initialization issues
+- Preview update flooding when typing rapidly (added debouncing)
+
+### Changed
+- Namespaced jQuery events (`.gfte`) to prevent conflicts with other plugins
+- Improved timing for preview updates to ensure Gravity Forms has finished rendering
 
 ## [0.1.0] - 2026-01-20
 

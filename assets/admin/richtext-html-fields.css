@@ -17,3 +17,32 @@
 .gfte-hidden-original-content-setting {
   display: none !important;
 }
+
+/* HTML field preview styles */
+.gfte-html-preview {
+  padding: 10px;
+  min-height: 20px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.gfte-html-preview p:first-child {
+  margin-top: 0;
+}
+
+.gfte-html-preview p:last-child {
+  margin-bottom: 0;
+}
+
+.gfte-empty-preview {
+  color: #999;
+  font-style: italic;
+}
+
+/* Ensure the HTML field preview content is visible in the form editor */
+#gform_fields .gfield--type-html .gfte-html-preview,
+.gform_fields .gfield--type-html .gfte-html-preview {
+  display: block !important;
+}

@@ -8,6 +8,9 @@
 
   let originalHideObserver = null;
   let originalContentListenerBound = false;
+  let editorInitialized = false;
+  let previewUpdatePending = false;
+  let previewUpdateTimer = null;
 
   function switchMode(mode) {
     if (window.wp && wp.editor && typeof wp.editor.switchMode === 'function') {
@@ -55,6 +58,129 @@
     return document.getElementById(EDITOR_ID);
   }
 
+  /**
+   * Update the HTML field preview in the form editor.
+   *
+   * @param {object} field - The Gravity Forms field object.
+   */
+  function updateFieldPreview(field) {
+    if (!field || !field.id) {
+      return;
+    }
+
+    const fieldContainer = document.getElementById('field_' + field.id);
+    if (!fieldContainer) {
+      return;
+    }
+
+    // GF 2.5+ HTML field structure: the content preview is typically in .gfield_html or .gfield_html_formatted
+    // or within a nested structure. We need to find the element that displays the placeholder text.
+    let previewContainer = null;
+    
+    // Try the standard GF selectors first.
+    previewContainer = fieldContainer.querySelector('.gfield_html_formatted');
+    
+    if (!previewContainer) {
+      previewContainer = fieldContainer.querySelector('.gfield_html');
+    }
+
+    if (!previewContainer) {
+      // GF 2.6+ may use gform-field-label structure with preview after it.
+      const label = fieldContainer.querySelector('.gform-field-label');
+      if (label && label.nextElementSibling) {
+        previewContainer = label.nextElementSibling;
+      }
+    }
+
+    if (!previewContainer) {
+      // Look for the element containing the GF placeholder text.
+      const walker = document.createTreeWalker(
+        fieldContainer,
+        NodeFilter.SHOW_TEXT,
+        null,
+        false
+      );
+      
+      let node;
+      while ((node = walker.nextNode())) {
+        if (node.textContent && node.textContent.includes('HTML content is not displayed')) {
+          previewContainer = node.parentElement;
+          break;
+        }
+      }
+    }
+
+    if (!previewContainer) {
+      // Create our own preview container inside the field.
+      let existingPreview = fieldContainer.querySelector('.gfte-html-preview');
+      if (!existingPreview) {
+        existingPreview = document.createElement('div');
+        existingPreview.className = 'gfte-html-preview';
+        // Insert after the admin icons/toolbar.
+        const adminIcons = fieldContainer.querySelector('.gfield_admin_icons');
+        if (adminIcons) {
+          adminIcons.parentNode.insertBefore(existingPreview, adminIcons.nextSibling);
+        } else {
+          fieldContainer.appendChild(existingPreview);
+        }
+      }
+      previewContainer = existingPreview;
+    }
+
+    if (!previewContainer) {
+      return;
+    }
+
+    const content = field.content || '';
+
+    // Render the HTML content in the preview.
+    if (content) {
+      previewContainer.innerHTML = '<div class="gfte-html-preview">' + content + '</div>';
+    } else {
+      previewContainer.innerHTML = '<em class="gfte-empty-preview">' + (window.gf_vars && window.gf_vars.noContent || 'No content') + '</em>';
+    }
+  }
+
+  /**
+   * Refresh the field preview when content changes.
+   * Debounced to prevent excessive updates.
+   */
+  function refreshCurrentFieldPreview() {
+    if (previewUpdatePending) {
+      return;
+    }
+    
+    previewUpdatePending = true;
+    
+    // Clear any existing timer.
+    if (previewUpdateTimer) {
+      clearTimeout(previewUpdateTimer);
+    }
+    
+    previewUpdateTimer = setTimeout(function() {
+      previewUpdatePending = false;
+      previewUpdateTimer = null;
+      
+      if (typeof window.GetSelectedField !== 'function') {
+        return;
+      }
+
+      const field = window.GetSelectedField();
+      if (field && field.type === 'html') {
+        updateFieldPreview(field);
+        
+        // Also try calling GF's native field update if available.
+        if (typeof window.UpdateFieldPreview === 'function') {
+          try {
+            window.UpdateFieldPreview('content');
+          } catch (e) {
+            // Ignore.
+          }
+        }
+      }
+    }, 100);
+  }
+
   function setFieldContent(html) {
     // Keep the original GF textarea in sync so any GF behaviors that still write
     // to it (merge tags, merge-tag-support, etc) operate on the same source.
@@ -66,6 +192,9 @@
     if (typeof SetFieldProperty === 'function') {
       SetFieldProperty('content', html);
     }
+
+    // Update the field preview in the form editor.
+    refreshCurrentFieldPreview();
   }
 
   function syncFromOriginalContentTextarea() {
@@ -104,6 +233,7 @@
         // ignore
       }
     }
+    editorInitialized = false;
   }
 
   function getActiveSettingsRoot() {
@@ -216,6 +346,11 @@
       return;
     }
 
+    // Prevent double initialization.
+    if (editorInitialized) {
+      removeEditor();
+    }
+
     textarea.value = initialHtml || '';
 
     wp.editor.initialize(EDITOR_ID, {
@@ -235,7 +370,7 @@
       quicktags: true,
     });
 
-    bindTabSwitching();
+    editorInitialized = true;
 
     // Sync when using "Text" mode (quicktags).
     textarea.addEventListener('input', function () {
@@ -321,7 +456,9 @@
       return;
     }
 
-    jQuery(document).on('gform_load_field_settings gform_post_load_field_settings', function (event, field) {
+    // Use namespaced events to prevent duplicate bindings.
+    jQuery(document).off('gform_load_field_settings.gfte gform_post_load_field_settings.gfte');
+    jQuery(document).on('gform_load_field_settings.gfte gform_post_load_field_settings.gfte', function (event, field) {
       removeEditor();
 
       // Restore in case we previously hid it for an HTML field.
@@ -340,10 +477,102 @@
       startObservingOriginalContentSetting();
 
       initEditor(field.content || '');
+      
+      // Update the field preview after a short delay to ensure GF has finished rendering.
+      setTimeout(function() {
+        updateFieldPreview(field);
+      }, 150);
     });
   }
 
-  // Ensure tabs work even if the editor initializes later.
+  /**
+   * Hook into Gravity Forms' field rendering to show HTML preview.
+   */
+  function bindFieldPreview() {
+    if (!window.jQuery) {
+      return;
+    }
+
+    // Use namespaced events to prevent duplicate bindings.
+    jQuery(document).off('gform_field_added.gfte gform_field_updated.gfte');
+    jQuery(document).on('gform_field_added.gfte gform_field_updated.gfte', function (event, form, field) {
+      if (field && field.type === 'html') {
+        setTimeout(function() {
+          updateFieldPreview(field);
+        }, 150);
+      }
+    });
+
+    // Override GetFieldContent for HTML fields to show rendered preview.
+    // Only override once.
+    if (typeof window.GetFieldContent === 'function' && !window.GetFieldContent._gfteOverridden) {
+      const originalGetFieldContent = window.GetFieldContent;
+
+      window.GetFieldContent = function (field) {
+        if (field && field.type === 'html' && field.content) {
+          return '<div class="gfte-html-preview">' + field.content + '</div>';
+        }
+        return originalGetFieldContent.apply(this, arguments);
+      };
+      
+      window.GetFieldContent._gfteOverridden = true;
+    }
+  }
+
+  /**
+   * Update all HTML field previews on the form.
+   */
+  function updateAllHtmlFieldPreviews() {
+    // Check if the form object is available.
+    if (typeof window.form === 'undefined' || !window.form || !window.form.fields) {
+      return;
+    }
+
+    const fields = window.form.fields;
+    for (let i = 0; i < fields.length; i++) {
+      const field = fields[i];
+      if (field && field.type === 'html') {
+        updateFieldPreview(field);
+      }
+    }
+  }
+
+  /**
+   * Initialize previews when the form editor loads.
+   */
+  let formLoadInitialized = false;
+  
+  function initOnFormLoad() {
+    if (!window.jQuery || formLoadInitialized) {
+      return;
+    }
+    
+    formLoadInitialized = true;
+
+    // Update all HTML field previews when the form editor is ready.
+    jQuery(document).off('gform_form_editor_ready.gfte');
+    jQuery(document).on('gform_form_editor_ready.gfte', function () {
+      setTimeout(updateAllHtmlFieldPreviews, 300);
+    });
+
+    // Fallback: also try on document ready in case the event already fired.
+    jQuery(function () {
+      // Check if form is already loaded.
+      if (typeof window.form !== 'undefined' && window.form && window.form.fields) {
+        setTimeout(updateAllHtmlFieldPreviews, 500);
+      }
+    });
+
+    // Also update when form is loaded/refreshed.
+    jQuery(document).off('gform_load_form_settings.gfte');
+    jQuery(document).on('gform_load_form_settings.gfte', function () {
+      setTimeout(updateAllHtmlFieldPreviews, 300);
+    });
+  }
+
+  // Initialize once - bind tab switching first as it uses capture phase.
   bindTabSwitching();
   bindOnLoadFieldSettings();
+  bindFieldPreview();
+  initOnFormLoad();
 })();
