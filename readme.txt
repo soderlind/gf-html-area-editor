@@ -1,8 +1,8 @@
 === GF HTML Area Editor ===
 Contributors: 
 Tags: gravity forms, html field, rich text editor, wysiwyg, tinymce
-Requires at least: 5.0
-Tested up to: 6.7
+Requires at least: 6.5
+Tested up to: 6.9
 Requires PHP: 7.4
 Stable tag: 0.2.1
 License: GPLv2 or later
