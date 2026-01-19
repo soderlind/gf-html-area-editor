@@ -1,0 +1,75 @@
+=== GF HTML Area Editor ===
+Contributors: 
+Tags: gravity forms, html field, rich text editor, wysiwyg, tinymce
+Requires at least: 5.0
+Tested up to: 6.7
+Requires PHP: 7.4
+Stable tag: 0.1.0
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+
+Adds a rich text editor to the Gravity Forms HTML field content setting.
+
+== Description ==
+
+By default, Gravity Forms provides a plain textarea for entering content in HTML fields. This plugin enhances that experience by replacing the textarea with the WordPress visual editor (TinyMCE), allowing you to:
+
+* Use a familiar WYSIWYG interface for formatting content
+* Easily add bold, italic, lists, and other formatting
+* Insert links with the built-in link dialog
+* Add images from the WordPress Media Library
+* Switch between Visual and Text (HTML) modes
+
+= Requirements =
+
+* WordPress 5.0 or higher
+* Gravity Forms 2.5 or higher
+* PHP 7.4 or higher
+
+== Installation ==
+
+1. Upload the `gf-html-area-editor` folder to the `/wp-content/plugins/` directory
+2. Activate the plugin through the 'Plugins' menu in WordPress
+3. Edit any Gravity Forms form and select an HTML field to see the rich text editor
+
+== Frequently Asked Questions ==
+
+= Does this plugin require Gravity Forms? =
+
+Yes, this plugin is an add-on for Gravity Forms and requires Gravity Forms to be installed and activated.
+
+= What HTML elements are allowed in the output? =
+
+For security, the plugin sanitizes HTML field content on the frontend. Allowed elements include:
+
+* Text formatting: p, br, strong, b, em, i
+* Headings: h2, h3, h4, h5, h6
+* Lists: ul, ol, li
+* Links: a (with href, title, target, rel attributes)
+* Images: img (with src, alt, title, width, height, class attributes)
+
+= Can I use merge tags with the rich text editor? =
+
+Yes, merge tags work the same way as with the default HTML field. You can insert merge tags using the merge tag selector.
+
+= Does this work with conditional logic? =
+
+Yes, all existing Gravity Forms functionality including conditional logic continues to work as expected.
+
+== Screenshots ==
+
+1. Rich text editor in the HTML field settings
+
+== Changelog ==
+
+= 0.1.0 =
+* Initial release
+* Rich text editor for HTML field content
+* Visual and Text mode switching
+* Media Library integration
+* Content sanitization on frontend output
+
+== Upgrade Notice ==
+
+= 0.1.0 =
+Initial release.
