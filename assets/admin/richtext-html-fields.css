@@ -1,0 +1,19 @@
+.gfte-rich-content-setting label {
+  display: inline-block !important;
+  position: relative;
+  z-index: 2;
+}
+
+/* Keep the label from overlapping the Visual/Text tabs. */
+#wp-gfte_field_rich_content-wrap {
+  margin-top: -2.7rem;
+}
+
+/* Hide the default content setting textarea row. */
+#field_settings .content_setting:not(.gfte-rich-content-setting),
+#gform_field_settings .content_setting:not(.gfte-rich-content-setting),
+.gform-field-settings .content_setting:not(.gfte-rich-content-setting),
+.widget-content .content_setting:not(.gfte-rich-content-setting),
+.gfte-hidden-original-content-setting {
+  display: none !important;
+}
