@@ -180,7 +180,9 @@ describe('GFTE rich text HTML fields', () => {
     // Use setTimeout to allow the async preview update.
     return new Promise((resolve) => {
       setTimeout(() => {
-        const previewContainer = document.querySelector('#field_5 .gfield_html');
+        // The code replaces .gfield_html with .gfte-html-preview
+        const previewContainer = document.querySelector('#field_5 .gfte-html-preview');
+        expect(previewContainer).toBeTruthy();
         expect(previewContainer.innerHTML).toContain('Test content');
         resolve();
       }, 200);
@@ -210,8 +212,11 @@ describe('GFTE rich text HTML fields', () => {
     // The script should trigger updateAllHtmlFieldPreviews on document ready.
     return new Promise((resolve) => {
       setTimeout(() => {
-        const preview1 = document.querySelector('#field_1 .gfield_html');
-        const preview2 = document.querySelector('#field_2 .gfield_html');
+        // The code replaces .gfield_html with .gfte-html-preview
+        const preview1 = document.querySelector('#field_1 .gfte-html-preview');
+        const preview2 = document.querySelector('#field_2 .gfte-html-preview');
+        expect(preview1).toBeTruthy();
+        expect(preview2).toBeTruthy();
         expect(preview1.innerHTML).toContain('Field 1');
         expect(preview2.innerHTML).toContain('Field 2');
         resolve();
