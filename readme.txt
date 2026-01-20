@@ -4,7 +4,7 @@ Tags: gravity forms, html field, rich text editor, wysiwyg, tinymce
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -61,6 +61,9 @@ Yes, all existing Gravity Forms functionality including conditional logic contin
 1. Rich text editor in the HTML field settings
 
 == Changelog ==
+
+= 1.0.1 =
+* Fixed GitHub Plugin Updater not detecting updates (was using wrong factory method)
 
 = 1.0.0 =
 * First stable release
