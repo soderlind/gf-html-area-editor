@@ -132,7 +132,8 @@
     if (content) {
       previewContainer.innerHTML = content;
     } else {
-      previewContainer.innerHTML = '<em class="gfte-empty-preview">' + (window.gf_vars && window.gf_vars.noContent || 'No content') + '</em>';
+      const noContentText = (window.gfteStrings && window.gfteStrings.noContent) || (window.gf_vars && window.gf_vars.noContent) || 'No content';
+      previewContainer.innerHTML = '<em class="gfte-empty-preview">' + noContentText + '</em>';
     }
   }
 
@@ -294,30 +295,88 @@
     setFieldContent(textarea.value);
   }
 
+  /**
+   * Get merge tag items from Gravity Forms.
+   * Uses GF's built-in merge tag system for translations and form-specific tags.
+   *
+   * @returns {Array} Array of menu items with text and value properties.
+   */
   function getMergeTagItems() {
-    // Common GF merge tags. In a real scenario these could be fetched dynamically.
-    return [
-      { text: 'User IP Address', value: '{ip}' },
-      { text: 'Date (mm/dd/yyyy)', value: '{date_mdy}' },
-      { text: 'Date (dd/mm/yyyy)', value: '{date_dmy}' },
-      { text: 'Embed Post/Page Id', value: '{embed_post:ID}' },
-      { text: 'Embed Post/Page Title', value: '{embed_post:post_title}' },
-      { text: 'Embed URL', value: '{embed_url}' },
-      { text: 'HTTP User Agent', value: '{user_agent}' },
-      { text: 'HTTP Referer URL', value: '{referer}' },
-      { text: 'User Display Name', value: '{user:display_name}' },
-      { text: 'User Email', value: '{user:user_email}' },
-      { text: 'User Login', value: '{user:user_login}' },
-    ];
+    const items = [];
+
+    // Try to get merge tags from Gravity Forms.
+    // GF stores them in gf_vars.mergeTags as grouped objects.
+    if (window.gf_vars && window.gf_vars.mergeTags) {
+      const mergeTags = window.gf_vars.mergeTags;
+
+      // mergeTags is an object with groups like 'default', 'user', 'post', etc.
+      for (const groupKey in mergeTags) {
+        if (!Object.prototype.hasOwnProperty.call(mergeTags, groupKey)) {
+          continue;
+        }
+
+        const group = mergeTags[groupKey];
+
+        // Each group has a 'tags' array with { tag, label } objects.
+        if (group && Array.isArray(group.tags)) {
+          for (let i = 0; i < group.tags.length; i++) {
+            const tag = group.tags[i];
+            if (tag && tag.tag && tag.label) {
+              items.push({
+                text: tag.label,
+                value: tag.tag,
+              });
+            }
+          }
+        }
+      }
+    }
+
+    // Also try to get form field merge tags if form is available.
+    if (window.form && Array.isArray(window.form.fields)) {
+      for (let i = 0; i < window.form.fields.length; i++) {
+        const field = window.form.fields[i];
+        if (field && field.id && field.label) {
+          items.push({
+            text: field.label,
+            value: '{' + field.label + ':' + field.id + '}',
+          });
+        }
+      }
+    }
+
+    // Fallback to basic merge tags if GF data isn't available.
+    if (items.length === 0) {
+      return [
+        { text: 'User IP Address', value: '{ip}' },
+        { text: 'Date (mm/dd/yyyy)', value: '{date_mdy}' },
+        { text: 'Date (dd/mm/yyyy)', value: '{date_dmy}' },
+        { text: 'Embed Post/Page Id', value: '{embed_post:ID}' },
+        { text: 'Embed Post/Page Title', value: '{embed_post:post_title}' },
+        { text: 'Embed URL', value: '{embed_url}' },
+        { text: 'HTTP User Agent', value: '{user_agent}' },
+        { text: 'HTTP Referer URL', value: '{referer}' },
+        { text: 'User Display Name', value: '{user:display_name}' },
+        { text: 'User Email', value: '{user:user_email}' },
+        { text: 'User Login', value: '{user:user_login}' },
+      ];
+    }
+
+    return items;
   }
 
   function registerMergeTagButton(editor) {
     const items = getMergeTagItems();
 
+    // Get tooltip text from GF translations or fallback.
+    const tooltipText = (window.gf_vars && window.gf_vars.insertMergeTag) ||
+                        (window.gfteStrings && window.gfteStrings.insertMergeTag) ||
+                        'Insert Merge Tag';
+
     // TinyMCE 4.x API (used by WordPress)
     editor.addButton('gabormergetags', {
       text: '{..}',
-      tooltip: 'Insert Merge Tag',
+      tooltip: tooltipText,
       type: 'menubutton',
       menu: items.map(function (item) {
         return {
@@ -512,7 +571,8 @@
           if (content) {
             return '<div class="gfte-html-preview">' + content + '</div>';
           }
-          return '<div class="gfte-html-preview"><em class="gfte-empty-preview">' + (window.gf_vars && window.gf_vars.noContent || 'No content') + '</em></div>';
+          const noContentText = (window.gfteStrings && window.gfteStrings.noContent) || (window.gf_vars && window.gf_vars.noContent) || 'No content';
+          return '<div class="gfte-html-preview"><em class="gfte-empty-preview">' + noContentText + '</em></div>';
         }
         return originalGetFieldContent.apply(this, arguments);
       };

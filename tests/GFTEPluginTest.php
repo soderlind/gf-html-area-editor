@@ -1,6 +1,6 @@
 <?php
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 namespace GFTE\Tests;
 
@@ -26,7 +26,7 @@ final class GFTEPluginTest extends TestCase {
 		Functions\expect( 'wp_enqueue_script' )->never();
 		Functions\expect( 'wp_enqueue_style' )->never();
 
-		$_GET['page'] = 'not_gf_edit_forms';
+		$_GET[ 'page' ] = 'not_gf_edit_forms';
 
 		\GFTE_Plugin::enqueue_admin_assets( 'toplevel_page_gravityforms' );
 		$this->assertTrue( true );
@@ -37,6 +37,7 @@ final class GFTEPluginTest extends TestCase {
 		Functions\when( 'sanitize_key' )->alias( static fn( $v ) => (string) $v );
 		Functions\when( 'wp_unslash' )->alias( static fn( $v ) => $v );
 		Functions\when( 'plugins_url' )->alias( static fn( $path ) => 'https://example.test/' . ltrim( (string) $path, '/' ) );
+		Functions\when( '__' )->alias( static fn( $text ) => $text );
 
 		Functions\expect( 'wp_enqueue_style' )
 			->once()
@@ -50,8 +51,11 @@ final class GFTEPluginTest extends TestCase {
 				\Mockery::type( 'string' ),
 				true
 			);
+		Functions\expect( 'wp_localize_script' )
+			->once()
+			->with( 'gfte-richtext-html-fields', 'gfteStrings', \Mockery::type( 'array' ) );
 
-		$_GET['page'] = 'gf_edit_forms';
+		$_GET[ 'page' ] = 'gf_edit_forms';
 
 		\GFTE_Plugin::enqueue_admin_assets( 'admin_page_gf_edit_forms' );
 		$this->assertTrue( true );
@@ -60,11 +64,16 @@ final class GFTEPluginTest extends TestCase {
 	public function test_sanitize_html_field_content_allows_basic_tags_and_forces_rel(): void {
 		$field = (object) [ 'type' => 'html' ];
 
-		Functions\when( 'wp_kses' )->alias(
-			static function ( string $content, array $allowed ): string {
-				// Minimal assertion: the allowlist is passed and content is returned.
-				TestCase::assertArrayHasKey( 'p', $allowed );
+		Functions\when( 'wp_kses_post' )->alias(
+			static function ( string $content ): string {
+				// wp_kses_post sanitizes content using WordPress post allowed tags.
 				return $content;
+			}
+		);
+
+		Functions\when( 'apply_filters' )->alias(
+			static function ( string $hook, $value, ...$args ) {
+				return $value;
 			}
 		);
 

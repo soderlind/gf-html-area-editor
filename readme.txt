@@ -1,10 +1,10 @@
 === GF HTML Area Editor ===
-Contributors: 
+Contributors: PerS
 Tags: gravity forms, html field, rich text editor, wysiwyg, tinymce
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 0.2.3
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,6 +62,15 @@ Yes, all existing Gravity Forms functionality including conditional logic contin
 
 == Changelog ==
 
+= 1.0.0 =
+* First stable release
+* Added GitHub Plugin Updater for automatic updates
+* Added `gfte_sanitize_html_content` filter for customizable sanitization
+* HTML sanitization now uses wp_kses_post() for broader tag support
+* Merge tag dropdown now uses Gravity Forms' built-in merge tag system
+* Form field merge tags dynamically included based on current form
+* Improved i18n support with translatable strings
+
 = 0.2.3 =
 * Fix naming in composer.json for better discoverability
 
@@ -90,6 +99,9 @@ Yes, all existing Gravity Forms functionality including conditional logic contin
 * Content sanitization on frontend output
 
 == Upgrade Notice ==
+
+= 1.0.0 =
+First stable release with GitHub auto-updates, improved merge tag integration, and customizable HTML sanitization.
 
 = 0.2.3 =
 Metadata improvements for better package discoverability.

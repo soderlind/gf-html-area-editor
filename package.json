@@ -1,6 +1,6 @@
 {
 	"name": "gf-html-area-editor",
-	"version": "0.2.3",
+	"version": "1.0.0",
 	"private": true,
 	"description": "TinyMCE rich text editor for Gravity Forms HTML field content.",
 	"scripts": {

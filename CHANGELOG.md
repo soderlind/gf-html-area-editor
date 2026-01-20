@@ -6,6 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.0.0] - 2026-01-20
+
+### Added
+- GitHub Plugin Updater for automatic updates from GitHub releases
+- Added `yahnis-elsts/plugin-update-checker` as composer dependency
+- Added `gfte_sanitize_html_content` filter for customizable HTML sanitization
+- Localized strings for "No content" and "Insert Merge Tag" via `gfteStrings`
+
+### Changed
+- First stable release
+- HTML sanitization now uses `wp_kses_post()` instead of custom allowlist for broader tag support
+- Merge tag dropdown now fetches from Gravity Forms' built-in merge tag system (`gf_vars.mergeTags`)
+- Form field merge tags are now dynamically included based on current form
+
+### Improved
+- Better i18n support with translatable strings
+- More robust merge tag integration with Gravity Forms
+
 ## [0.2.3] - 2026-01-20
 
 ### Changed
