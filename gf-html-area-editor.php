@@ -3,7 +3,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Plugin Name: GF HTML Area Editor
  * Description: Adds a rich text editor to the Gravity Forms HTML field content setting.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Per Soderlind
  * License: GPL-2.0-or-later
  * Text Domain: gf-html-area-editor
@@ -15,8 +15,8 @@ require_once __DIR__ . '/GitHubPluginUpdater.php';
 
 use GFTE\Update\GitHubPluginUpdater;
 
-// Initialize GitHub updates.
-GitHubPluginUpdater::create(
+// Initialize GitHub updates with release assets.
+GitHubPluginUpdater::create_with_assets(
 	'https://github.com/soderlind/gf-html-area-editor',
 	__FILE__,
 	'gf-html-area-editor',
@@ -25,7 +25,7 @@ GitHubPluginUpdater::create(
 );
 
 final class GFTE_Plugin {
-	private const VERSION             = '1.0.0';
+	private const VERSION             = '1.0.1';
 	private const SCRIPT_HANDLE_ADMIN = 'gfte-richtext-html-fields';
 	private const STYLE_HANDLE_ADMIN  = 'gfte-richtext-html-fields';
 
