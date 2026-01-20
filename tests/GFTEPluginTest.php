@@ -1,6 +1,6 @@
 <?php
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 namespace GFTE\Tests;
 
@@ -26,7 +26,7 @@ final class GFTEPluginTest extends TestCase {
 		Functions\expect( 'wp_enqueue_script' )->never();
 		Functions\expect( 'wp_enqueue_style' )->never();
 
-		$_GET['page'] = 'not_gf_edit_forms';
+		$_GET[ 'page' ] = 'not_gf_edit_forms';
 
 		\GFTE_Plugin::enqueue_admin_assets( 'toplevel_page_gravityforms' );
 		$this->assertTrue( true );
@@ -55,7 +55,7 @@ final class GFTEPluginTest extends TestCase {
 			->once()
 			->with( 'gfte-richtext-html-fields', 'gfteStrings', \Mockery::type( 'array' ) );
 
-		$_GET['page'] = 'gf_edit_forms';
+		$_GET[ 'page' ] = 'gf_edit_forms';
 
 		\GFTE_Plugin::enqueue_admin_assets( 'admin_page_gf_edit_forms' );
 		$this->assertTrue( true );
