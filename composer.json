@@ -1,21 +1,32 @@
 {
-  "name": "persoderlind/gf-text-editor",
-  "description": "GF Textarea Editor",
-  "type": "wordpress-plugin",
-  "license": "GPL-2.0-or-later",
-  "require": {
-    "php": ">=7.4"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "^9.6",
-    "brain/monkey": "^2.6"
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "GFTE\\Tests\\": "tests/"
-    }
-  },
-  "scripts": {
-    "test": "phpunit"
-  }
+	"name": "soderlind/gf-html-area-editor",
+	"description": "Adds a rich text editor (TinyMCE) to the Gravity Forms HTML field content setting, replacing the default plain textarea.",
+	"type": "wordpress-plugin",
+	"license": "GPL-2.0-or-later",
+	"keywords": [
+		"gravity forms",
+		"gravityforms",
+		"html field editor",
+		"html",
+		"editor",
+		"wordpress",
+		"tinymce",
+		"rich text editor",
+		"wysiwyg"
+	],
+	"require": {
+		"php": ">=7.4"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "^9.6",
+		"brain/monkey": "^2.6"
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"GFTE\\Tests\\": "tests/"
+		}
+	},
+	"scripts": {
+		"test": "phpunit"
+	}
 }

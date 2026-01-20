@@ -4,7 +4,7 @@ Tags: gravity forms, html field, rich text editor, wysiwyg, tinymce
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 0.2.2
+Stable tag: 0.2.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,6 +62,9 @@ Yes, all existing Gravity Forms functionality including conditional logic contin
 
 == Changelog ==
 
+= 0.2.3 =
+* Fix naming in composer.json for better discoverability
+
 = 0.2.2 =
 * Added heading format dropdown (P, H2-H6) in editor toolbar
 * Added Media Library button for inserting images
@@ -87,6 +90,9 @@ Yes, all existing Gravity Forms functionality including conditional logic contin
 * Content sanitization on frontend output
 
 == Upgrade Notice ==
+
+= 0.2.3 =
+Metadata improvements for better package discoverability.
 
 = 0.2.2 =
 Adds heading format dropdown and media insertion button.

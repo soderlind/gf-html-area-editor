@@ -59,7 +59,7 @@ composer test
 
 # JavaScript tests
 npm install
-npm test
+npm run test:js
 ```
 
 ## Credits
