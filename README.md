@@ -2,6 +2,12 @@
 
 Adds a rich text editor (TinyMCE) to the Gravity Forms HTML field content setting, replacing the default plain textarea.
 
+
+
+https://github.com/user-attachments/assets/ee62e2e2-93f9-4591-afa3-cfd35fd17d9e
+
+
+
 ## Description
 
 By default, Gravity Forms provides a plain textarea for entering content in HTML fields. This plugin enhances that experience by replacing the textarea with the WordPress visual editor (TinyMCE), allowing you to:
