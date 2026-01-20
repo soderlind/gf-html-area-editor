@@ -351,7 +351,9 @@
     wp.editor.initialize(EDITOR_ID, {
       tinymce: {
         wpautop: false,
-        toolbar1: 'bold,italic,bullist,numlist,link,gabormergetags',
+        toolbar1:
+          'formatselect,bold,italic,bullist,numlist,link,wp_add_media,gabormergetags',
+        block_formats: 'P=p;H2=h2;H3=h3;H4=h4;H5=h5;H6=h6',
         setup: function (editor) {
           registerMergeTagButton(editor);
 
