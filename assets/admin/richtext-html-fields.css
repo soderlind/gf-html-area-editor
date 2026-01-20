@@ -9,6 +9,16 @@
 	margin-top: -2.7rem;
 }
 
+/* Narrow format dropdown */
+#wp-gfte_field_rich_content-wrap .mce-listbox {
+	width: 60px !important;
+	max-width: 60px !important;
+}
+
+#wp-gfte_field_rich_content-wrap .mce-listbox .mce-txt {
+	width: 30px !important;
+}
+
 /* Hide the default content setting textarea row. */
 #field_settings .content_setting:not(.gfte-rich-content-setting),
 #gform_field_settings .content_setting:not(.gfte-rich-content-setting),
