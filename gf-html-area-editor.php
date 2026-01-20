@@ -3,15 +3,29 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Plugin Name: GF HTML Area Editor
  * Description: Adds a rich text editor to the Gravity Forms HTML field content setting.
- * Version: 0.2.3
- * Author: 
+ * Version: 1.0.0
+ * Author: Per Soderlind
  * License: GPL-2.0-or-later
  * Text Domain: gf-html-area-editor
  * Domain Path: /languages
  */
 
+// Load the GitHub updater.
+require_once __DIR__ . '/GitHubPluginUpdater.php';
+
+use GFTE\Update\GitHubPluginUpdater;
+
+// Initialize GitHub updates.
+GitHubPluginUpdater::create(
+	'https://github.com/soderlind/gf-html-area-editor',
+	__FILE__,
+	'gf-html-area-editor',
+	'/gf-html-area-editor\.zip/',
+	'main'
+);
+
 final class GFTE_Plugin {
-	private const VERSION             = '0.2.3';
+	private const VERSION             = '1.0.0';
 	private const SCRIPT_HANDLE_ADMIN = 'gfte-richtext-html-fields';
 	private const STYLE_HANDLE_ADMIN  = 'gfte-richtext-html-fields';
 
@@ -74,6 +88,15 @@ final class GFTE_Plugin {
 			self::VERSION,
 			true
 		);
+
+		wp_localize_script(
+			self::SCRIPT_HANDLE_ADMIN,
+			'gfteStrings',
+			[
+				'noContent'      => __( 'No content', 'gf-html-area-editor' ),
+				'insertMergeTag' => __( 'Insert Merge Tag', 'gf-html-area-editor' ),
+			]
+		);
 	}
 
 	/**
@@ -131,38 +154,19 @@ final class GFTE_Plugin {
 			return $content;
 		}
 
-		$allowed = [
-			'p'      => [],
-			'br'     => [],
-			'ul'     => [],
-			'ol'     => [],
-			'li'     => [],
-			'h2'     => [],
-			'h3'     => [],
-			'h4'     => [],
-			'h5'     => [],
-			'h6'     => [],
-			'strong' => [],
-			'b'      => [],
-			'em'     => [],
-			'i'      => [],
-			'a'      => [
-				'href'   => true,
-				'title'  => true,
-				'target' => true,
-				'rel'    => true,
-			],
-			'img'    => [
-				'src'    => true,
-				'alt'    => true,
-				'title'  => true,
-				'width'  => true,
-				'height' => true,
-				'class'  => true,
-			],
-		];
+		$content = wp_kses_post( $content );
 
-		$content = wp_kses( $content, $allowed );
+		/**
+		 * Filters the sanitized HTML field content.
+		 *
+		 * @since 0.2.4
+		 *
+		 * @param string $content The sanitized content.
+		 * @param object $field   The Gravity Forms field object.
+		 * @param int    $form_id The form ID.
+		 */
+		$content = apply_filters( 'gfte_sanitize_html_content', $content, $field, $form_id );
+
 		return wp_targeted_link_rel( $content );
 	}
 }
