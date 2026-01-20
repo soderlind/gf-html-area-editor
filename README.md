@@ -26,9 +26,11 @@ By default, Gravity Forms provides a plain textarea for entering content in HTML
 
 ## Installation
 
-1. Upload the `gf-html-area-editor` folder to the `/wp-content/plugins/` directory
-2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Edit any Gravity Forms form and select an HTML field to see the rich text editor
+1. Download [`gf-html-area-editor.zip`](https://github.com/soderlind/gf-html-area-editor/releases/latest/download/gf-html-area-editor.zip)
+2. Upload via  `Plugins → Add New → Upload Plugin`
+3. Activate via `WordPress Admin → Plugins`
+
+Plugin [updates are handled automatically](https://github.com/soderlind/wordpress-plugin-github-updater#readme) via GitHub. No need to manually download and install updates.
 
 ## Usage
 
