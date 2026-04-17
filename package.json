@@ -11,6 +11,8 @@
 	"dependencies": {},
 	"devDependencies": {
 		"jsdom": "^26.0.0",
-		"vitest": "^4.0.0"
+		"vitest": "^4.0.0",
+		"vite": "^7.3.2",
+		"rollup": "^4.59.0"
 	}
 }
